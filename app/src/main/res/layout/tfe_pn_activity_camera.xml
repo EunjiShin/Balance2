@@ -23,13 +23,16 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="울려라 띵동"
+        android:layout_gravity="left"
+        android:layout_marginLeft="200px"
+        android:text="alarm"
         android:id="@+id/alarmButton"/>
+
     <Button
+        android:id="@+id/stopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="시끄러워 띵동"
-        android:id="@+id/stopButton"/>
+        android:layout_gravity="right"
+        android:layout_marginRight="200px"
+        android:text="stop" />
 </FrameLayout>
