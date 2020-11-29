@@ -19,4 +19,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black"
-    tools:context="org.tensorflow.lite.examples.posenet.Camera2Activity" />
+    tools:context="org.tensorflow.lite.examples.posenet.Camera2Activity">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="울려라 띵동"
+        android:id="@+id/alarmButton"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="시끄러워 띵동"
+        android:id="@+id/stopButton"/>
+</FrameLayout>

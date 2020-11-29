@@ -278,7 +278,7 @@ class PosenetActivity :
    */
   private fun setUpCameraOutputs() {
     val activity = activity
-    val manager = activity!!.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+    val manager = requireActivity().getSystemService(Context.CAMERA_SERVICE) as CameraManager
     try {
       for (cameraId in manager.cameraIdList) {
         val characteristics = manager.getCameraCharacteristics(cameraId)
@@ -556,7 +556,7 @@ class PosenetActivity :
         )
       }
     }
-
+/*
     canvas.drawText(
       "Score: %.2f".format(person.score),
       (15.0f * widthRatio),
@@ -575,7 +575,7 @@ class PosenetActivity :
       (70.0f * heightRatio + bottom),
       paint
     )
-
+*/
     // Draw!
     surfaceHolder!!.unlockCanvasAndPost(canvas)
   }

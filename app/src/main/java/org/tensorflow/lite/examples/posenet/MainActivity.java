@@ -17,9 +17,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*Action Bar(Title bar) 받아와서 없애기*/
-        ActionBar ab = getSupportActionBar();
-        ab.hide();
 
         /*button 할당*/
         CameraButton = (ImageButton) findViewById(R.id.CameraButton);
