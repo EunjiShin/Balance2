@@ -24,13 +24,14 @@
         android:label="@string/tfe_pn_app_name"
         android:exported="true">
     </activity>
-    <activity android:name=".StartingActivity"/>
-    <activity android:name=".LaunchActivity" />
-    <activity android:name=".MainActivity">
+    <activity android:name=".StartingActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
+    </activity>
+    <activity android:name=".LaunchActivity" />
+    <activity android:name=".MainActivity">
     </activity>
     <activity android:name=".TutorialActivity" />
     <activity android:name=".CameraActivity" android:exported="true"/>

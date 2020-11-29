@@ -5,10 +5,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:background="@android:color/white"
+                android:background="#518235"
                 tools:context=".StartingActivity">
 
-<!--        <com.mattkula.secrettextview.SecretTextView-->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="324dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="250dp"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/balance" />
+
+    <!--        <com.mattkula.secrettextview.SecretTextView-->
 <!--            android:id="@+id/textView1"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
