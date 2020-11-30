@@ -49,12 +49,7 @@ import androidx.fragment.app.Fragment
 import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
-import android.view.LayoutInflater
-import android.view.Surface
-import android.view.SurfaceHolder
-import android.view.SurfaceView
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import java.util.concurrent.Semaphore
@@ -65,6 +60,9 @@ import org.tensorflow.lite.examples.posenet.lib.Person
 import org.tensorflow.lite.examples.posenet.lib.Posenet as Posenet
 import org.tensorflow.lite.examples.posenet.lib.Position
 import org.tensorflow.lite.examples.posenet.lib.KeyPoint
+import kotlin.concurrent.timer
+
+private var flag = 0;
 
 class PosenetActivity :
   Fragment(),
@@ -72,20 +70,19 @@ class PosenetActivity :
 
   /** List of body joints that should be connected.    */
   private val bodyJoints = listOf(
-    Pair(BodyPart.LEFT_WRIST, BodyPart.LEFT_ELBOW),
-    Pair(BodyPart.LEFT_ELBOW, BodyPart.LEFT_SHOULDER),
-    Pair(BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
-    Pair(BodyPart.RIGHT_SHOULDER, BodyPart.RIGHT_ELBOW),
-    Pair(BodyPart.RIGHT_ELBOW, BodyPart.RIGHT_WRIST),
-    Pair(BodyPart.LEFT_SHOULDER, BodyPart.LEFT_HIP),
-    Pair(BodyPart.LEFT_HIP, BodyPart.RIGHT_HIP),
-    Pair(BodyPart.RIGHT_HIP, BodyPart.RIGHT_SHOULDER),
-    Pair(BodyPart.LEFT_HIP, BodyPart.LEFT_KNEE),
-    Pair(BodyPart.LEFT_KNEE, BodyPart.LEFT_ANKLE),
-    Pair(BodyPart.RIGHT_HIP, BodyPart.RIGHT_KNEE),
-    Pair(BodyPart.RIGHT_KNEE, BodyPart.RIGHT_ANKLE)
+          Pair(BodyPart.LEFT_WRIST, BodyPart.LEFT_ELBOW),
+          Pair(BodyPart.LEFT_ELBOW, BodyPart.LEFT_SHOULDER),
+          Pair(BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
+          Pair(BodyPart.RIGHT_SHOULDER, BodyPart.RIGHT_ELBOW),
+          Pair(BodyPart.RIGHT_ELBOW, BodyPart.RIGHT_WRIST),
+          Pair(BodyPart.LEFT_SHOULDER, BodyPart.LEFT_HIP),
+          Pair(BodyPart.LEFT_HIP, BodyPart.RIGHT_HIP),
+          Pair(BodyPart.RIGHT_HIP, BodyPart.RIGHT_SHOULDER),
+          Pair(BodyPart.LEFT_HIP, BodyPart.LEFT_KNEE),
+          Pair(BodyPart.LEFT_KNEE, BodyPart.LEFT_ANKLE),
+          Pair(BodyPart.RIGHT_HIP, BodyPart.RIGHT_KNEE),
+          Pair(BodyPart.RIGHT_KNEE, BodyPart.RIGHT_ANKLE)
   )
-
 
 
   /** Threshold for confidence score. */
@@ -188,16 +185,16 @@ class PosenetActivity :
    */
   private val captureCallback = object : CameraCaptureSession.CaptureCallback() {
     override fun onCaptureProgressed(
-      session: CameraCaptureSession,
-      request: CaptureRequest,
-      partialResult: CaptureResult
+            session: CameraCaptureSession,
+            request: CaptureRequest,
+            partialResult: CaptureResult
     ) {
     }
 
     override fun onCaptureCompleted(
-      session: CameraCaptureSession,
-      request: CaptureRequest,
-      result: TotalCaptureResult
+            session: CameraCaptureSession,
+            request: CaptureRequest,
+            result: TotalCaptureResult
     ) {
     }
   }
@@ -213,9 +210,9 @@ class PosenetActivity :
   }
 
   override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
+          inflater: LayoutInflater,
+          container: ViewGroup?,
+          savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.tfe_pn_activity_posenet, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -255,14 +252,14 @@ class PosenetActivity :
   }
 
   override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<String>,
-    grantResults: IntArray
+          requestCode: Int,
+          permissions: Array<String>,
+          grantResults: IntArray
   ) {
     if (requestCode == REQUEST_CAMERA_PERMISSION) {
       if (allPermissionsGranted(grantResults)) {
         ErrorDialog.newInstance(getString(R.string.tfe_pn_request_permission))
-          .show(childFragmentManager, FRAGMENT_DIALOG)
+                .show(childFragmentManager, FRAGMENT_DIALOG)
       }
     } else {
       super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -286,7 +283,7 @@ class PosenetActivity :
         // We don't use a front facing camera in this sample.
         val cameraDirection = characteristics.get(CameraCharacteristics.LENS_FACING)
         if (cameraDirection != null &&
-          cameraDirection == CameraCharacteristics.LENS_FACING_FRONT
+                cameraDirection == CameraCharacteristics.LENS_FACING_FRONT
         ) {
           continue
         }
@@ -294,8 +291,8 @@ class PosenetActivity :
         previewSize = Size(PREVIEW_WIDTH, PREVIEW_HEIGHT)
 
         imageReader = ImageReader.newInstance(
-          PREVIEW_WIDTH, PREVIEW_HEIGHT,
-          ImageFormat.YUV_420_888, /*maxImages*/ 2
+                PREVIEW_WIDTH, PREVIEW_HEIGHT,
+                ImageFormat.YUV_420_888, /*maxImages*/ 2
         )
 
         sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION)!!
@@ -308,7 +305,7 @@ class PosenetActivity :
 
         // Check if the flash is supported.
         flashSupported =
-          characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE) == true
+                characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE) == true
 
         this.cameraId = cameraId
 
@@ -322,7 +319,7 @@ class PosenetActivity :
       // Currently an NPE is thrown when the Camera2API is used but not supported on the
       // device this code runs.
       ErrorDialog.newInstance(getString(R.string.tfe_pn_camera_error))
-        .show(childFragmentManager, FRAGMENT_DIALOG)
+              .show(childFragmentManager, FRAGMENT_DIALOG)
     }
   }
 
@@ -331,7 +328,7 @@ class PosenetActivity :
    */
   private fun openCamera() {
     val permissionCamera = requireContext().checkPermission(
-      Manifest.permission.CAMERA, Process.myPid(), Process.myUid()
+            Manifest.permission.CAMERA, Process.myPid(), Process.myUid()
     )
     if (permissionCamera != PackageManager.PERMISSION_GRANTED) {
       requestCameraPermission()
@@ -422,21 +419,21 @@ class PosenetActivity :
       fillBytes(image.planes, yuvBytes)
 
       ImageUtils.convertYUV420ToARGB8888(
-        yuvBytes[0]!!,
-        yuvBytes[1]!!,
-        yuvBytes[2]!!,
-        previewWidth,
-        previewHeight,
-        /*yRowStride=*/ image.planes[0].rowStride,
-        /*uvRowStride=*/ image.planes[1].rowStride,
-        /*uvPixelStride=*/ image.planes[1].pixelStride,
-        rgbBytes
+              yuvBytes[0]!!,
+              yuvBytes[1]!!,
+              yuvBytes[2]!!,
+              previewWidth,
+              previewHeight,
+              /*yRowStride=*/ image.planes[0].rowStride,
+              /*uvRowStride=*/ image.planes[1].rowStride,
+              /*uvPixelStride=*/ image.planes[1].pixelStride,
+              rgbBytes
       )
 
       // Create bitmap from int array
       val imageBitmap = Bitmap.createBitmap(
-        rgbBytes, previewWidth, previewHeight,
-        Bitmap.Config.ARGB_8888
+              rgbBytes, previewWidth, previewHeight,
+              Bitmap.Config.ARGB_8888
       )
 
       // Create rotated version for portrait display
@@ -444,8 +441,8 @@ class PosenetActivity :
       rotateMatrix.postRotate(90.0f)
 
       val rotatedBitmap = Bitmap.createBitmap(
-        imageBitmap, 0, 0, previewWidth, previewHeight,
-        rotateMatrix, true
+              imageBitmap, 0, 0, previewWidth, previewHeight,
+              rotateMatrix, true
       )
       image.close()
 
@@ -469,21 +466,21 @@ class PosenetActivity :
         // New image is taller so we are height constrained.
         val cropHeight = bitmap.height - (bitmap.width.toFloat() / modelInputRatio)
         croppedBitmap = Bitmap.createBitmap(
-          bitmap,
-          0,
-          (cropHeight / 2).toInt(),
-          bitmap.width,
-          (bitmap.height - cropHeight).toInt()
+                bitmap,
+                0,
+                (cropHeight / 2).toInt(),
+                bitmap.width,
+                (bitmap.height - cropHeight).toInt()
         )
       }
       else -> {
         val cropWidth = bitmap.width - (bitmap.height.toFloat() * modelInputRatio)
         croppedBitmap = Bitmap.createBitmap(
-          bitmap,
-          (cropWidth / 2).toInt(),
-          0,
-          (bitmap.width - cropWidth).toInt(),
-          bitmap.height
+                bitmap,
+                (cropWidth / 2).toInt(),
+                0,
+                (bitmap.width - cropWidth).toInt(),
+                bitmap.height
         )
       }
     }
@@ -507,6 +504,9 @@ class PosenetActivity :
     val right: Int
     val top: Int
     val bottom: Int
+
+    var flag: Int = 0;
+
     if (canvas.height > canvas.width) {
       screenWidth = canvas.width
       screenHeight = canvas.width
@@ -523,10 +523,10 @@ class PosenetActivity :
 
     setPaint()
     canvas.drawBitmap(
-      bitmap,
-      Rect(0, 0, bitmap.width, bitmap.height),
-      Rect(left, top, right, bottom),
-      paint
+            bitmap,
+            Rect(0, 0, bitmap.width, bitmap.height),
+            Rect(left, top, right, bottom),
+            paint
     )
 
     val widthRatio = screenWidth.toFloat() / MODEL_WIDTH
@@ -542,20 +542,69 @@ class PosenetActivity :
       }
     }
 
+//      /** toast **/
+//      flag++;
+//      if((keyPoint.bodyPart == BodyPart.LEFT_SHOULDER) && flag<10 ){
+//        val toast = Toast.makeText(activity, keyPoint.position.x, Toast.LENGTH_LONG)
+//        toast.setGravity(Gravity.TOP, 0, 0)
+//        toast.show()
+//
+//
+//        val toast2 = Toast.makeText(activity, keyPoint.position.y, Toast.LENGTH_LONG)
+//        toast2.setGravity(Gravity.TOP, 0, 0)
+//        toast2.show()
+//
+//      }
+//      if(keyPoint.bodyPart == BodyPart.RIGHT_SHOULDER){
+//        val toast = Toast.makeText(activity, R.string.RS_x + keyPoint.position.x, Toast.LENGTH_LONG)
+//        toast.setGravity(Gravity.TOP, 0, 0)
+//        toast.show()
+//
+//
+//        val toast2 = Toast.makeText(activity, R.string.RS_y + keyPoint.position.y, Toast.LENGTH_LONG)
+//        toast2.setGravity(Gravity.TOP, 0, 0)
+//        toast2.show()
+//      }
+//
+//    /** end **/
+
     for (line in bodyJoints) {
       if (
-        (person.keyPoints[line.first.ordinal].score > minConfidence) and
-        (person.keyPoints[line.second.ordinal].score > minConfidence)
+              (person.keyPoints[line.first.ordinal].score > minConfidence) and
+              (person.keyPoints[line.second.ordinal].score > minConfidence)
       ) {
         canvas.drawLine(
-          person.keyPoints[line.first.ordinal].position.x.toFloat() * widthRatio + left,
-          person.keyPoints[line.first.ordinal].position.y.toFloat() * heightRatio + top,
-          person.keyPoints[line.second.ordinal].position.x.toFloat() * widthRatio + left,
-          person.keyPoints[line.second.ordinal].position.y.toFloat() * heightRatio + top,
-          paint
+                person.keyPoints[line.first.ordinal].position.x.toFloat() * widthRatio + left,
+                person.keyPoints[line.first.ordinal].position.y.toFloat() * heightRatio + top,
+                person.keyPoints[line.second.ordinal].position.x.toFloat() * widthRatio + left,
+                person.keyPoints[line.second.ordinal].position.y.toFloat() * heightRatio + top,
+                paint
         )
       }
     }
+
+
+
+//    /** 5초에 ㅎ한번씩 좌표값 출력 **/
+//    val timer = timer(period = 5000, initialDelay = 5000) {
+//
+//      for (i in 1..17) {
+//        if (person.keyPoints[i].bodyPart == BodyPart.LEFT_SHOULDER) {
+//          Log.d("왼쪽 어깨 x좌표 : ", person.keyPoints[i].position.x.toString())
+//          Log.d("왼쪽 어깨 y좌표 : ", person.keyPoints[i].position.y.toString())
+//        }
+//
+//        if (person.keyPoints[i].bodyPart == BodyPart.RIGHT_SHOULDER) {
+//          Log.d("오른쪽 어깨 x좌표 : ", person.keyPoints[i].position.x.toString())
+//          Log.d("오른쪽 어깨 y좌표 : ", person.keyPoints[i].position.y.toString())
+//        }
+//      }
+//
+//    }
+//
+//  /** 여기까지 **/
+
+
 /*
     canvas.drawText(
       "Score: %.2f".format(person.score),
@@ -590,9 +639,28 @@ class PosenetActivity :
 
     // Perform inference.
     val person = posenet.estimateSinglePose(scaledBitmap)
-
     val canvas: Canvas = surfaceHolder!!.lockCanvas()
     draw(canvas, person, scaledBitmap)
+
+//    /** 여기에 넣으면 5초에 한번 출력 후 꺼짐. 카메라랑 동시에 진행 안됨; **/
+//    val timer = timer(period = 5000, initialDelay = 5000) {
+//
+//      for (i in 1..17) {
+//        if (person.keyPoints[i].bodyPart == BodyPart.LEFT_SHOULDER) {
+//          Log.d("왼쪽 어깨 x좌표 : ", person.keyPoints[i].position.x.toString())
+//          Log.d("왼쪽 어깨 y좌표 : ", person.keyPoints[i].position.y.toString())
+//        }
+//
+//        if (person.keyPoints[i].bodyPart == BodyPart.RIGHT_SHOULDER) {
+//          Log.d("오른쪽 어깨 x좌표 : ", person.keyPoints[i].position.x.toString())
+//          Log.d("오른쪽 어깨 y좌표 : ", person.keyPoints[i].position.y.toString())
+//        }
+//      }
+//
+//    }
+//
+//    /** 여기까지 **/
+
   }
 
   /**

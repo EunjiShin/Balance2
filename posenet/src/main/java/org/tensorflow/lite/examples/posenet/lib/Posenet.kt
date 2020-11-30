@@ -27,6 +27,10 @@ import java.nio.channels.FileChannel
 import kotlin.math.exp
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.gpu.GpuDelegate
+import java.security.Key
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.concurrent.timer
 
 enum class BodyPart {
   NOSE,
@@ -270,18 +274,17 @@ class Posenet(
       keypointList[idx].score = confidenceScores[idx]
       totalScore += confidenceScores[idx]
 
-      // 원하는 부위 좌표 값 제대로 들어왔는지 체크
-      if (keypointList[idx].bodyPart == BodyPart.RIGHT_SHOULDER){
-        Log.d("오른쪽 어깨 x좌표 : ", keypointList[idx].position.x.toString())
-        Log.d("오른쪽 어깨 y좌표 : ", keypointList[idx].position.y.toString())
-      }
+      if (keypointList[idx].bodyPart == BodyPart.LEFT_SHOULDER) {
+          Log.d("왼쪽 어깨 x좌표 : ", keypointList[idx].position.x.toString())
+          Log.d("왼쪽 어깨 y좌표 : ", keypointList[idx].position.y.toString())
+        }
 
-      if (keypointList[idx].bodyPart == BodyPart.LEFT_SHOULDER){
-        Log.d("왼쪽 어깨 x좌표 : ", keypointList[idx].position.x.toString())
-        Log.d("왼쪽 어깨 y좌표 : ", keypointList[idx].position.y.toString())
-      }
+        if (keypointList[idx].bodyPart == BodyPart.RIGHT_SHOULDER) {
+          Log.d("오른쪽 어깨 x좌표 : ", keypointList[idx].position.x.toString())
+          Log.d("오른쪽 어깨 y좌표 : ", keypointList[idx].position.y.toString())
+        }
+
     }
-
 
 
     person.keyPoints = keypointList.toList()
@@ -292,4 +295,3 @@ class Posenet(
 
     }
   }
-

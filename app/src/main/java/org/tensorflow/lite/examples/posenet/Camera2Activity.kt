@@ -16,18 +16,17 @@
 
 package org.tensorflow.lite.examples.posenet
 
-import android.content.Intent
 import android.content.Context
-import android.media.MediaPlayer
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.tfe_pn_activity_camera.*
 
+
 class Camera2Activity : AppCompatActivity() {
+
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -46,12 +45,14 @@ class Camera2Activity : AppCompatActivity() {
       }
     }
 
+
     savedInstanceState ?: supportFragmentManager.beginTransaction()
       .replace(R.id.container, PosenetActivity())
       .commit()
 
 //    val nextIntent = Intent(this, TestActivity::class.java)
 //    startActivity(nextIntent)
+
 
   }
 }
