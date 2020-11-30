@@ -1,18 +1,14 @@
-# TensorFlow Lite PoseNet Android Demo
+# Balance Prototype Application
 ### Overview
-This is an app that continuously detects the body parts in the frames seen by
- your device's camera. These instructions walk you through building and running
- the demo on an Android device. Camera captures are discarded immediately after
- use, nothing is stored or saved.
-
-![Demo Image](posenetimage.png)
+BALANCE is an Android artificial intelligence application aimed at modern spine, neck and shoulder joint health. 
+BALANCE aims to autonomous and continuous health care of the neck and shoulder joints of the user, and provides camera observation function, alarm function, and graph function to achieve this. The service is developed using TensorFlowLite and AndroidStudio and is based on Android OS.
 
 ## Build the demo using Android Studio
 
 ### Prerequisites
 
 * If you don't have it already, install **[Android Studio](
- https://developer.android.com/studio/index.html)** 3.2 or
+ https://developer.android.com/studio/index.html)** 4.1 or
  later, following the instructions on the website.
 
 * Android device and Android development environment with minimum API 21.
@@ -20,10 +16,6 @@ This is an app that continuously detects the body parts in the frames seen by
 ### Building
 * Open Android Studio, and from the `Welcome` screen, select
 `Open an existing Android Studio project`.
-
-* From the `Open File or Project` window that appears, navigate to and select
- the `tensorflow-lite/examples/posenet/android` directory from wherever you
- cloned the TensorFlow Lite sample GitHub repo. Click `OK`.
 
 * If it asks you to do a `Gradle Sync`, click `OK`.
 
@@ -40,16 +32,4 @@ This is an app that continuously detects the body parts in the frames seen by
  on setting up developer devices.
 
 
-### Model used
-Downloading, extraction and placement in assets folder has been managed
- automatically by `download.gradle`.
-
-If you explicitly want to download the model, you can download it from
- **[here](
- https://storage.googleapis.com/download.tensorflow.org/models/tflite/posenet_mobilenet_v1_100_257x257_multi_kpt_stripped.tflite)**.
-
-### Additional Note
-_Please do not delete the assets folder content_. If you explicitly deleted the
- files, then please choose `Build` > `Rebuild` from menu to re-download the
- deleted model files into assets folder.
 
